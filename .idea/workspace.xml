@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="e7979723-2bea-4fc0-b05a-4e196cb5d7df" name="Default Changelist" comment="Add Database strategy">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/column.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dbs/idatabase.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dbs/mysql.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dbs/oracle.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/foreign_key.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/functions.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/primary_key.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/table.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeStyleSettingsInfer">
+    <option name="done" value="true" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectCodeStyleSettingsMigration">
+    <option name="version" value="1" />
+  </component>
+  <component name="ProjectId" id="1jBCj27ABLeGz3RB3YnXK83kska" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e7979723-2bea-4fc0-b05a-4e196cb5d7df" name="Default Changelist" comment="" />
+      <created>1603268229460</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1603268229460</updated>
+      <workItem from="1603268230693" duration="1573000" />
+      <workItem from="1603269822736" duration="2790000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Add Database strategy" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add Database strategy" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="905" y="287" key="CommitChangelistDialog2" timestamp="1603272460506">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="905" y="287" key="CommitChangelistDialog2/0.0.2560.1400/-1920.203.1920.1040@0.0.2560.1400" timestamp="1603272460506" />
+    <state x="987" y="435" width="585" height="530" key="find.popup" timestamp="1603270877555">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="987" y="435" width="585" height="530" key="find.popup/0.0.2560.1400/-1920.203.1920.1040@0.0.2560.1400" timestamp="1603270877555" />
+  </component>
+</project>
