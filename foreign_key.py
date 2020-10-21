@@ -81,7 +81,7 @@ class ForeignKey(Column):
         
         :returns: DDL line as String
         """
-
+        # TODO MOVE TO THE END OF DDL NOT IN CREATE TABLE - USE ALTER TABLE AT THE END
         name = self._column_name
         data_type = str.upper(self._data_type)
 

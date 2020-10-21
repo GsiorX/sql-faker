@@ -1,4 +1,5 @@
-from dbs.idatabase import IDatabase
+from database_types.idatabase import IDatabase
+from database_types.mysql import MySQL
 from table import Table
 
 error_01 = "Parameter {} was {}, but can only be: {}"
@@ -19,19 +20,7 @@ class Database:
     :type db_type: String
     """
 
-    def __init__(self, db_name, db_type="mysql", lang="en_EN"):
-
-        # check if dbs_type is allowed TODO change to strategy
-        allowed_dbs_types = ["mysql", "mariadb", "sqlite"]
-        if db_type not in allowed_dbs_types:
-            raise ValueError(
-                error_01.format(
-                    "db_type",
-                    db_type,
-                    ", ".join(allowed_dbs_types)
-                )
-            )
-
+    def __init__(self, db_name: str, db_type: IDatabase = MySQL, lang="en_EN"):
         # Store parameters in object
         self._db_name = db_name
         self._type = db_type
@@ -39,8 +28,9 @@ class Database:
         # Add room for all tables of this table
         self.tables = {}
         self.lang = lang
-        # TODO change
-        self._db_strategy = None
+
+        # Select sql generation engine
+        self._db_strategy = db_type()
 
     @property
     def db_strategy(self) -> IDatabase:
@@ -50,7 +40,11 @@ class Database:
     def db_strategy(self, strategy: IDatabase) -> None:
         self._db_strategy = strategy
 
-    def add_table(self, table_name, n_rows=100) -> None:
+    @property
+    def db_name(self):
+        return self._db_name
+
+    def add_table(self, table_name: str, n_rows: int = 100) -> None:
         """This method can be used to add a table to the database.
 
         The table object will be stored in the tables dictionary of the
@@ -61,19 +55,13 @@ class Database:
         :param n_rows: Number of rows that the table should have in DML
         :type n_rows: Integer
         :returns: None
-        :raises ValueError: If n_rows is not integer
-        :raises ValueError: If table_name is not string
         :raises ValueError: IF n_rows is 0 or less
         """
 
-        if type(n_rows) is not int:
-            raise ValueError("n_rows must be an integer")
         if n_rows < 1:
             raise ValueError("n_rows must be at least 1 but was {}".format(
                 str(n_rows)
             ))
-        if type(table_name) is not str:
-            raise ValueError("n_rows must be a string")
 
         self.tables[table_name] = Table(
             table_name=table_name,
@@ -81,7 +69,7 @@ class Database:
             n_rows=n_rows
         )
 
-    def generate_data(self, recursive=False) -> None:
+    def generate_data(self, recursive: bool = False) -> None:
         """This method runs all generator methods of all tables
         
         To do so, the method will iterate all stored table objects and
@@ -101,7 +89,7 @@ class Database:
         :returns: DDL script as string
         """
 
-        return self._db_strategy.return_ddl(self._db_name, self.tables)
+        return self._db_strategy.return_ddl(db_name=self._db_name, tables=self.tables)
 
     def return_dml(self) -> str:
         """This method generates the database's DML and returns it as string.
@@ -109,9 +97,9 @@ class Database:
         :returns: DDL script as string
         """
 
-        return self._db_strategy.return_dml(self._db_name, self.tables)
+        return self._db_strategy.return_dml(db_name=self._db_name, tables=self.tables)
 
-    def export_ddl(self, file_name) -> None:
+    def export_ddl(self, file_name: str) -> None:
         """This method exports the database's DDL script to disk.
         
         :param file_name: The file name (e.g. "C:/my_ddl.sql")
@@ -122,7 +110,7 @@ class Database:
         with open(file_name, "w", encoding="utf-8") as out_file:
             out_file.write(self.return_ddl())
 
-    def export_dml(self, file_name) -> None:
+    def export_dml(self, file_name: str) -> None:
         """This method exports the database's DML script to disk.
         
         :param file_name: The file name (e.g. "C:/my_ddl.sql")
@@ -133,7 +121,7 @@ class Database:
         with open(file_name, "w", encoding="utf-8") as out_file:
             out_file.write(self.return_dml())
 
-    def export_sql(self, file_name) -> None:
+    def export_sql(self, file_name: str) -> None:
         """This method exports the database's complete SQL script to disk.
         
         :param file_name: The file name (e.g. "C:/my_ddl.sql")

@@ -1,4 +1,4 @@
-from dbs.idatabase import IDatabase
+from database_types.idatabase import IDatabase
 
 
 class Oracle(IDatabase):
