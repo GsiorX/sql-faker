@@ -17,16 +17,14 @@ class Table:
     :param db_object: The database, the table belongs to
     :param n_rows: The number of rows that should be created for DML
     :type table_name: String
-    :type db_object: Python sqlfaker Database object
+    :type db_object: Python sql-faker Database object
     :type n_rows: Integer
     :raises ValueError: If n_rows is smaller than 1
     :raises ValueError: If n_rows is not integer
     """
 
-    def __init__(self, table_name, db_object, n_rows=100):
+    def __init__(self, table_name: str, db_object, n_rows: int = 100):
 
-        # check inputs
-        # check_type(n_rows, int)
         check_value_is_not_less_than(n_rows, 1)
 
         # Store parameters in object
@@ -38,6 +36,18 @@ class Table:
 
         # Add room for all columns of this table
         self.columns = {}
+
+    @property
+    def db_object(self):
+        return self._db_object
+
+    @property
+    def table_name(self):
+        return self._table_name\
+
+    @property
+    def n_rows(self):
+        return self._n_rows
 
     def add_column(self, column_name, data_target="name", data_type="int", not_null=False, **kwargs):
         """This method adds a new column to a table.

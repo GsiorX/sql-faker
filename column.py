@@ -31,23 +31,15 @@ class Column:
 
     def __init__(
             self,
-            column_name,
-            n_rows,
+            column_name: str,
+            n_rows: int,
             table_object,
-            data_target="name",
-            data_type="int",
-            ai=False,
-            not_null=False,
+            data_target: str = "name",
+            data_type: str = "int",
+            ai: bool = False,
+            not_null: bool = False,
             **kwargs
     ):
-
-        # TODO Check type of input data
-        # check_type(column_name, str)
-        # check_type(data_target, str)
-        # check_type(data_type, str)
-        # check_type(ai, bool)
-        # check_type(not_null, bool)
-
         # store all parameters
         self._column_name = column_name
         self._data_type = data_type
@@ -63,10 +55,26 @@ class Column:
         # store data
         self.data = []
 
+    @property
+    def column_name(self):
+        return self._column_name
+
+    @property
+    def not_null(self):
+        return self._not_null
+
+    @property
+    def ai(self):
+        return self._ai
+
+    @property
+    def data_type(self):
+        return self._data_type
+
     def generate_data(self, recursive, lang):
         """This method generates data for a column object.
         
-        :param recursive: Wether data generation is done for rekursive data
+        :param recursive: Whether data generation is done for recursive data
         :type recursive: Boolean
         :returns: None
         """
@@ -76,7 +84,6 @@ class Column:
             self.data = list(range(1, self._n_rows + 1))
 
         else:
-            print(self._data_target)
             # generate data using faker
             self.data = get_fake_data(
                 data_target=self._data_target,
@@ -90,7 +97,7 @@ class Column:
         :returns: DDL line as String
         """
 
-        # TODO Adopt this for dbs support
+        # TODO Adopt this for dbs support - move foreign keys to the end of ddl
 
         name = self._column_name
         not_null = self._not_null
