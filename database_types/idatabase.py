@@ -23,3 +23,7 @@ class IDatabase:
     @abstractmethod
     def return_dml(self, db_name, tables) -> str:
         pass
+
+    @abstractmethod
+    def insert_data(self, db_name: str, table_name: str, rows: int, attributes, data, datatype) -> str:
+        pass

@@ -40,7 +40,7 @@ class Table:
         # Add room for all columns of this table
         self.columns = {}
 
-    def add_column(self, column_name: str, data_target="name", data_type="int", not_null=False, **kwargs):
+    def add_column(self, column_name: str, data_target: str = "name", data_type: str = "int", not_null=False, **kwargs):
         """This method adds a new column to a table.
         
         :param column_name: The column's name
@@ -161,35 +161,5 @@ class Table:
         # transpose the data
         data = array(data).transpose()
 
-        # get table meta
-        rows = self._n_rows
-        cols = len(attributes)
-
-        # TODO Adopt this for dbs support
-
-        dml_output = "INSERT INTO `{}`.`{}` (`{}`) VALUES\n".format(
-            self._db_object._db_name,
-            self._table_name,
-            "`, `".join(list(attributes))
-        )
-
-        numtypes = ["int", "float", "single", "decimal", "numeric"]
-
-        for row in range(rows):
-            line = ""
-            for col in range(cols):
-                if col > 0:
-                    line += ", "
-                if datatype[col].split("(")[0] not in numtypes:
-                    # try:
-                    line += "'" + data[row][col] + "'"
-                    # except:
-                    #     print(data[row][col])
-                if datatype[col].split("(")[0] in numtypes:
-                    line += str(data[row][col])
-            dml_output += "\t(" + line + "),\n"
-
-        # add semi colon to end of statement
-        dml_output = dml_output[:-2] + ";\n\n"
-
-        return dml_output
+        return self._engine.insert_data(self._db_object._db_name, self._table_name, self._n_rows, attributes, data,
+                                        datatype)
