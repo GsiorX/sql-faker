@@ -34,7 +34,7 @@ class Column:
             column_name: str,
             n_rows: int,
             table_object,
-            data_target: str = "name",
+            data_target="name",
             data_type: str = "int",
             ai: bool = False,
             not_null: bool = False,

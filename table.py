@@ -120,7 +120,7 @@ class Table:
     def generate_data(self, recursive, lang):
         """This method iterates all columns and calls their data generation method.
         
-        :param recursive: Wether data generation is done for rekursive data
+        :param recursive: Whether data generation is done for recursive data
         :type recursive: Boolean
         :returns: None
         """
@@ -146,7 +146,7 @@ class Table:
         # remove the comma at the end of the last line
         ddl_output = ddl_output[:-2]
 
-        # add closing braket
+        # add closing bracket
         ddl_output += "\n);\n\n"
 
         return ddl_output
