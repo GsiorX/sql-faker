@@ -1,4 +1,5 @@
 from column import Column
+from database_types.idatabase import IDatabase
 
 
 class PrimaryKey(Column):
@@ -16,17 +17,19 @@ class PrimaryKey(Column):
     :type n_rows: Integer
     """
 
-    def __init__(self, column_name, n_rows, table_object):
+    def __init__(self, column_name: str, n_rows: int, engine: IDatabase, table_object):
         
         # Instantiate the master class but fix some parameters
         super().__init__(
-            column_name = column_name,
+            column_name=column_name,
             n_rows=n_rows,
             ai=True,
             not_null=True,
             table_object=table_object,
             data_target=None,
-            data_type="int"
+            data_type="int",
+            engine=engine,
+            kwargs=None
         )
 
     def return_ddl(self):

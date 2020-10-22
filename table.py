@@ -1,4 +1,5 @@
 from column import Column
+from database_types.idatabase import IDatabase
 from foreign_key import ForeignKey
 from primary_key import PrimaryKey
 from functions import check_value_is_not_less_than
@@ -23,7 +24,7 @@ class Table:
     :raises ValueError: If n_rows is not integer
     """
 
-    def __init__(self, table_name: str, db_object, n_rows: int = 100):
+    def __init__(self, table_name: str, db_object, engine: IDatabase, n_rows: int = 100):
 
         check_value_is_not_less_than(n_rows, 1)
 
@@ -31,25 +32,15 @@ class Table:
         self._table_name = table_name
         self._n_rows = n_rows
 
+        self._engine = engine
+
         # store own database object
         self._db_object = db_object
 
         # Add room for all columns of this table
         self.columns = {}
 
-    @property
-    def db_object(self):
-        return self._db_object
-
-    @property
-    def table_name(self):
-        return self._table_name\
-
-    @property
-    def n_rows(self):
-        return self._n_rows
-
-    def add_column(self, column_name, data_target="name", data_type="int", not_null=False, **kwargs):
+    def add_column(self, column_name: str, data_target="name", data_type="int", not_null=False, **kwargs):
         """This method adds a new column to a table.
         
         :param column_name: The column's name
@@ -63,13 +54,13 @@ class Table:
         """
 
         self.columns[column_name] = Column(
-
             # add column properties
             column_name=column_name,
             data_type=data_type,
             ai=False,
             not_null=not_null,
             data_target=data_target,
+            engine=self._engine,
             kwargs=kwargs,
 
             # auto add table properties
@@ -77,7 +68,7 @@ class Table:
             table_object=self
         )
 
-    def add_foreign_key(self, column_name, target_table, target_column):
+    def add_foreign_key(self, column_name: str, target_table, target_column):
         """This method adds a foreign key column to a table.
 
         :param column_name: Name of the foreign key to add
@@ -98,10 +89,12 @@ class Table:
             # auto add table properties
             n_rows=self._n_rows,
             target_db=self._db_object,
-            table_object=self
+            table_object=self,
+
+            engine=self._engine
         )
 
-    def add_primary_key(self, column_name):
+    def add_primary_key(self, column_name: str):
         """This method adds a primary key column to a table.
         
         :param column_name: Name of the foreign key to add
@@ -114,7 +107,9 @@ class Table:
 
             # auto add table properties
             n_rows=self._n_rows,
-            table_object=self
+            table_object=self,
+
+            engine=self._engine
         )
 
     def generate_data(self, recursive, lang):
@@ -132,16 +127,13 @@ class Table:
         
         :returns: DDL statement as String
         """
-
-        # TODO Adopt this for dbs support
-
-        ddl_output = "CREATE TABLE `{}`.`{}` (\n".format(
-            self._db_object._db_name,
-            self._table_name
-        )
+        ddl_output = self._engine.create_table(self._db_object._db_name, self._table_name)
 
         for key in self.columns:
-            ddl_output += self.columns[key].return_ddl()
+            if type(self.columns[key]) is not ForeignKey:
+                ddl_output += self.columns[key].return_ddl()
+            else:
+                ddl_output += self.columns[key].return_foreign_column()
 
         # remove the comma at the end of the last line
         ddl_output = ddl_output[:-2]

@@ -1,6 +1,8 @@
 from column import Column
 from random import sample
 
+from database_types.idatabase import IDatabase
+
 
 class ForeignKey(Column):
     """This column class represents foreign key objects of a table.
@@ -16,14 +18,15 @@ class ForeignKey(Column):
     :param target_column: Defines the key's target column (primary key)
     :param table_object: Holds the parent table which the key belongs to
     :type column_name: String
-    :type table_object: sqlfaker Table object
-    :type target_db: sqlfaker Database object
+    :type table_object: sql-faker Table object
+    :type target_db: sql-faker Database object
     :type target_table: String
     :type target_column: String
     :type n_rows: Integer
     """
 
-    def __init__(self, column_name, table_object, target_db, target_table, target_column, n_rows):
+    def __init__(self, column_name: str, table_object, target_db, target_table: str, target_column: str, n_rows: int,
+                 engine: IDatabase):
 
         self._target_db = target_db
         self._target_table = target_table
@@ -45,13 +48,15 @@ class ForeignKey(Column):
             ai=False,
             not_null=False,
             table_object=table_object,
-            data_target=None
+            data_target=None,
+            engine=engine,
+            kwargs=None
         )
 
     def generate_data(self, recursive=False, lang=None):
         """This method generates foreign key data by sampling the respective primary key.
         
-        :param recursive: Wether data generation is done for rekursive data
+        :param recursive: Whether data generation is done for recursive data
         :type recursive: Boolean
         :default recursive: False
         :returns: None
@@ -76,21 +81,17 @@ class ForeignKey(Column):
 
         self.data = foreign_key_list
 
-    def return_ddl(self):
+    def return_ddl(self) -> str:
         """This method returns the DDL line of the foreign key column.
         
         :returns: DDL line as String
         """
-        # TODO MOVE TO THE END OF DDL NOT IN CREATE TABLE - USE ALTER TABLE AT THE END
-        name = self._column_name
-        data_type = str.upper(self._data_type)
 
-        ddl_output = "\t`{}` {},\n\tFOREIGN KEY ({}) REFERENCES {}({}),\n".format(
-            name,
-            data_type,
-            name,
-            self._target_db.tables[self._target_table]._table_name,
-            self._target_db.tables[self._target_table].columns[self._target_column]._column_name
-        )
+        return self._engine.create_foreign_key(self._table_object._db_object._db_name,self._column_name, str.upper(self._data_type), self._table_object._table_name,
+                                               self._target_db.tables[self._target_table]._table_name,
+                                               self._target_db.tables[self._target_table].columns[
+                                                   self._target_column]._column_name)
 
-        return ddl_output
+    def return_foreign_column(self) -> str:
+        return super().return_ddl()
+

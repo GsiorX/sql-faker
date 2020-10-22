@@ -20,7 +20,7 @@ class Database:
     :type db_type: String
     """
 
-    def __init__(self, db_name: str, db_type: IDatabase = MySQL, lang="en_EN"):
+    def __init__(self, db_name: str, db_type: IDatabase = MySQL, lang="en_US"):
         # Store parameters in object
         self._db_name = db_name
         self._type = db_type
@@ -66,7 +66,8 @@ class Database:
         self.tables[table_name] = Table(
             table_name=table_name,
             db_object=self,
-            n_rows=n_rows
+            n_rows=n_rows,
+            engine=self._db_strategy
         )
 
     def generate_data(self, recursive: bool = False) -> None:

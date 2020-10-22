@@ -1,6 +1,7 @@
 from numpy import array
 
 from database_types.idatabase import IDatabase
+from foreign_key import ForeignKey
 
 
 class MySQL(IDatabase):
@@ -9,34 +10,43 @@ class MySQL(IDatabase):
         ddl_output += "CREATE DATABASE {};\n".format(db_name)
         ddl_output += "USE {};\n\n".format(db_name)
 
-        # Create Tables
+        # Create Tables without foreign keys
         for tkey in tables:
-            ddl_output += "CREATE TABLE `{}`.`{}` (\n".format(
-                db_name,
-                tables[tkey].table_name
-            )
+            ddl_output += tables[tkey].return_ddl()
 
-            # Create columns
+        # Create foreign keys
+        for tkey in tables:
             for ckey in tables[tkey].columns:
-                name = tables[tkey].columns[ckey].column_name
-                not_null = tables[tkey].columns[ckey].not_null
-                ai = tables[tkey].columns[ckey].ai
-                data_type = str.upper(tables[tkey].columns[ckey].data_type)
-
-                ddl_output += "\t`{}` {}{}{},\n".format(
-                    name,
-                    data_type,
-                    " AUTO_INCREMENT" if ai else "",
-                    " NOT NULL" if not_null else ""
-                )
-
-            # remove the comma at the end of the last line
-            ddl_output = ddl_output[:-2]
-
-            # add closing bracket
-            ddl_output += "\n);\n\n"
+                if type(tables[tkey].columns[ckey]) is ForeignKey:
+                    ddl_output += tables[tkey].columns[ckey].return_ddl()
 
         return ddl_output
+
+    def create_table(self, db_name: str, table_name: str) -> str:
+        return "CREATE TABLE `{}`.`{}` (\n".format(
+            db_name,
+            table_name
+        )
+
+    def create_column(self, column_name: str, not_null: bool, ai: bool, data_type: str) -> str:
+        return "\t`{}` {}{}{},\n".format(
+            column_name,
+            data_type,
+            " AUTO_INCREMENT" if ai else "",
+            " NOT NULL" if not_null else ""
+        )
+
+    def create_foreign_key(self, db_name: str, column_name: str, data_type: str, table_name: str,
+                           target_table_name: str,
+                           target_column_name: str) -> str:
+        return "ALTER TABLE `{}`.`{}` \n" \
+               "\tADD FOREIGN KEY ({}) REFERENCES {}(`{}`) ON DELETE CASCADE;\n\n".format(
+            db_name,
+            table_name,
+            column_name,
+            target_table_name,
+            target_column_name
+        )
 
     def return_dml(self, db_name, tables) -> str:
         dml_output = "USE {};\n\n".format(db_name)
