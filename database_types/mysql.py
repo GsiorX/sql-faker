@@ -59,9 +59,7 @@ class MySQL(IDatabase):
             rows = tables[tkey].n_rows
             cols = len(attributes)
 
-            # TODO Adopt this for dbs support
-
-            dml_output = "INSERT INTO `{}`.`{}` (`{}`) VALUES\n".format(
+            dml_output += "INSERT INTO `{}`.`{}` (`{}`) VALUES\n".format(
                 db_name,
                 tables[tkey].table_name,
                 "`, `".join(list(attributes))
@@ -72,13 +70,13 @@ class MySQL(IDatabase):
             for row in range(rows):
                 line = ""
                 for col in range(cols):
+                    # Escape single quote
+                    if "'" in str(data[row][col]):
+                        data[row][col] = "''".join(data[row][col].split("'"))
                     if col > 0:
                         line += ", "
                     if datatype[col].split("(")[0] not in numtypes:
-                        # try:
                         line += "'" + data[row][col] + "'"
-                        # except:
-                        #     print(data[row][col])
                     if datatype[col].split("(")[0] in numtypes:
                         line += str(data[row][col])
                 dml_output += "\t(" + line + "),\n"
