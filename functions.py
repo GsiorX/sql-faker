@@ -1,12 +1,12 @@
 from faker import Faker
-import datetime
 
 error_02 = "List contains to elements."
 
 
-def get_fake_data(data_target="name", n_rows=100, lang="en_EN", **kwargs):
+def get_fake_data(kwargs, data_target="name", n_rows=100, lang="en_US"):
     """This method generates a certain data item based on the data_target selected
     
+    :param kwargs:
     :param data_target: Data item type that should be created
     :type data_target: String
     :param n_rows: Number of rows to generate
@@ -15,16 +15,7 @@ def get_fake_data(data_target="name", n_rows=100, lang="en_EN", **kwargs):
     :type lang: str
     :returns: List of data
     """
-    data_faker = Faker()
-    # generator_function = getattr(data_faker, data_target)
-    # return_list = []
-    #
-    # for _ in range(n_rows):
-    #     if data_target in ["date", "past_datetime", "time", "past_date", "date_time"]:
-    #         return_list.append(datetime.datetime.strftime(generator_function(), "%Y-%m-%d %H:%M:%S"))
-    #     else:
-    #         return_list.append(generator_function())
-    # return return_list
+    data_faker = Faker(lang)
 
     if len(kwargs):
         generator_function = getattr(data_faker, data_target)(**kwargs)
@@ -37,10 +28,11 @@ def get_fake_data(data_target="name", n_rows=100, lang="en_EN", **kwargs):
     for _ in range(n_rows):
         if data_target == "":
             return_list.append("")
-        elif data_target == "simple_profile":
-            return_list.append(generator_function()["username"])
         else:
-            return_list.append(generator_function())
+            if callable(generator_function):
+                return_list.append(generator_function())
+            else:
+                return_list.append(generator_function)
     return return_list
 
 

@@ -1,9 +1,10 @@
+from database_types.idatabase import IDatabase
 from functions import get_fake_data
 
 
 class Column:
     """The column class represents column objects of a table.
-    
+
     This class is used to setup a new column, define its meta data and generate
     column data afterwards. Data are stored within the column object and are later
     used when exporting the DML script for the table.
@@ -14,7 +15,7 @@ class Column:
     :param ai: Defines the auto increment attribute of the column
     :param not_null: Defines the not null attribute of the column
     :param data_target: The type of fake data that faker should create
-    
+
     :type column_name: String
     :type n_rows: Integer
     :type ai: Boolean
@@ -34,11 +35,12 @@ class Column:
             column_name: str,
             n_rows: int,
             table_object,
+            kwargs,
+            engine: IDatabase,
             data_target="name",
             data_type: str = "int",
             ai: bool = False,
-            not_null: bool = False,
-            **kwargs
+            not_null: bool = False
     ):
         # store all parameters
         self._column_name = column_name
@@ -47,6 +49,7 @@ class Column:
         self._not_null = not_null
         self._n_rows = n_rows
         self._data_target = data_target
+        self._engine = engine
         self._kwargs = kwargs
 
         # store own table object
@@ -74,6 +77,7 @@ class Column:
     def generate_data(self, recursive, lang):
         """This method generates data for a column object.
         
+        :param lang:
         :param recursive: Whether data generation is done for recursive data
         :type recursive: Boolean
         :returns: None
@@ -88,7 +92,8 @@ class Column:
             self.data = get_fake_data(
                 data_target=self._data_target,
                 n_rows=self._n_rows,
-                lang=lang
+                lang=lang,
+                kwargs=self._kwargs
             )
 
     def return_ddl(self):
@@ -97,18 +102,4 @@ class Column:
         :returns: DDL line as String
         """
 
-        # TODO Adopt this for dbs support - move foreign keys to the end of ddl
-
-        name = self._column_name
-        not_null = self._not_null
-        ai = self._ai
-        data_type = str.upper(self._data_type)
-
-        ddl_output = "\t`{}` {}{}{},\n".format(
-            name,
-            data_type,
-            " AUTO_INCREMENT" if ai else "",
-            " NOT NULL" if not_null else ""
-        )
-
-        return ddl_output
+        return self._engine.create_column(self._column_name, self._not_null, self._ai, str.upper(self._data_type))
