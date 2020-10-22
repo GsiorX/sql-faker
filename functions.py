@@ -1,7 +1,5 @@
 from faker import Faker
 
-error_02 = "List contains to elements."
-
 
 def get_fake_data(kwargs, data_target="name", n_rows=100, lang="en_US"):
     """This method generates a certain data item based on the data_target selected
@@ -33,6 +31,7 @@ def get_fake_data(kwargs, data_target="name", n_rows=100, lang="en_US"):
                 return_list.append(generator_function())
             else:
                 return_list.append(generator_function)
+
     return return_list
 
 

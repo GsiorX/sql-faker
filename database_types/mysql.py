@@ -1,5 +1,3 @@
-from numpy import array
-
 from database_types.idatabase import IDatabase
 from foreign_key import ForeignKey
 
@@ -48,50 +46,42 @@ class MySQL(IDatabase):
             target_column_name
         )
 
-    def return_dml(self, db_name, tables) -> str:
+    def return_dml(self, db_name: str, tables) -> str:
         dml_output = "USE {};\n\n".format(db_name)
 
         for tkey in tables:
-            data = []
-            attributes = []
-            datatype = []
+            dml_output += tables[tkey].return_dml()
 
-            # get all data into one place
-            for ckey in tables[tkey].columns:
-                datatype.append(tables[tkey].columns[ckey].data_type)
-                data.append(tables[tkey].columns[ckey].data)
-                attributes.append(ckey)
+        return dml_output
 
-            # transpose the data
-            data = array(data).transpose()
+    def insert_data(self, db_name: str, table_name: str, rows: int, attributes, data, datatype) -> str:
+        dml_output = "INSERT INTO `{}`.`{}` (`{}`) VALUES\n".format(
+            db_name,
+            table_name,
+            "`, `".join(list(attributes))
+        )
 
-            # get table meta
-            rows = tables[tkey].n_rows
-            cols = len(attributes)
+        numtypes = ["int", "float", "single", "decimal", "numeric"]
 
-            dml_output += "INSERT INTO `{}`.`{}` (`{}`) VALUES\n".format(
-                db_name,
-                tables[tkey].table_name,
-                "`, `".join(list(attributes))
-            )
+        for row in range(rows):
+            line = ""
+            for col in range(len(attributes)):
+                split = datatype[col].split("(")[0]
 
-            numtypes = ["int", "float", "single", "decimal", "numeric"]
+                # Escape single quote
+                if "'" in str(data[row][col]):
+                    data[row][col] = "''".join(data[row][col].split("'"))
 
-            for row in range(rows):
-                line = ""
-                for col in range(cols):
-                    # Escape single quote
-                    if "'" in str(data[row][col]):
-                        data[row][col] = "''".join(data[row][col].split("'"))
-                    if col > 0:
-                        line += ", "
-                    if datatype[col].split("(")[0] not in numtypes:
-                        line += "'" + data[row][col] + "'"
-                    if datatype[col].split("(")[0] in numtypes:
-                        line += str(data[row][col])
-                dml_output += "\t(" + line + "),\n"
+                if col > 0:
+                    line += ", "
+                if split in numtypes:
+                    line += str(data[row][col])
+                elif split not in numtypes:
+                    line += "'" + data[row][col] + "'"
 
-            # add semi colon to end of statement
-            dml_output = dml_output[:-2] + ";\n\n"
+            dml_output += "\t(" + line + "),\n"
+
+        # add semi colon to end of statement
+        dml_output = dml_output[:-2] + ";\n\n"
 
         return dml_output
