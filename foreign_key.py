@@ -1,7 +1,6 @@
+from database_types.idatabase import IDatabase
 from column import Column
 from random import sample
-
-from database_types.idatabase import IDatabase
 
 
 class ForeignKey(Column):
@@ -33,14 +32,14 @@ class ForeignKey(Column):
         self._target_column = target_column
 
         # Locate the target column
-        tbl = target_db.tables[self._target_table]
-        clmn = tbl.columns[self._target_column]
+        table = target_db.tables[self._target_table]
+        column = table.columns[self._target_column]
 
         # Retrieve the real results from target column/table
-        self._target_table_n_rows = clmn._n_rows
-        self._target_row_data_type = clmn._data_type
+        self._target_table_n_rows = column._n_rows
+        self._target_row_data_type = column._data_type
 
-        # Instantiate the master class but fix some parameters
+        # Instantiate the master class but alter some parameters
         super().__init__(
             column_name=column_name,
             n_rows=n_rows,

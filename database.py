@@ -2,8 +2,6 @@ from database_types.idatabase import IDatabase
 from database_types.mysql import MySQL
 from table import Table
 
-error_01 = "Parameter {} was {}, but can only be: {}"
-
 
 class Database:
     """This is the main class of this package. It is used to instantiate database objects.
@@ -39,10 +37,6 @@ class Database:
     @db_strategy.setter
     def db_strategy(self, strategy: IDatabase) -> None:
         self._db_strategy = strategy
-
-    @property
-    def db_name(self):
-        return self._db_name
 
     def add_table(self, table_name: str, n_rows: int = 100) -> None:
         """This method can be used to add a table to the database.
@@ -95,7 +89,7 @@ class Database:
     def return_dml(self) -> str:
         """This method generates the database's DML and returns it as string.
         
-        :returns: DDL script as string
+        :returns: DML script as string
         """
 
         return self._db_strategy.return_dml(db_name=self._db_name, tables=self.tables)

@@ -1,5 +1,5 @@
-from column import Column
 from database_types.idatabase import IDatabase
+from column import Column
 
 
 class PrimaryKey(Column):

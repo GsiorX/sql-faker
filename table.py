@@ -1,8 +1,7 @@
-from column import Column
 from database_types.idatabase import IDatabase
 from foreign_key import ForeignKey
 from primary_key import PrimaryKey
-from functions import check_value_is_not_less_than
+from column import Column
 from numpy import array
 
 
@@ -20,14 +19,9 @@ class Table:
     :type table_name: String
     :type db_object: Python sql-faker Database object
     :type n_rows: Integer
-    :raises ValueError: If n_rows is smaller than 1
-    :raises ValueError: If n_rows is not integer
     """
 
     def __init__(self, table_name: str, db_object, engine: IDatabase, n_rows: int = 100):
-
-        check_value_is_not_less_than(n_rows, 1)
-
         # Store parameters in object
         self._table_name = table_name
         self._n_rows = n_rows
@@ -101,7 +95,6 @@ class Table:
         """
 
         self.columns[column_name] = PrimaryKey(
-
             # add foreign key properties
             column_name=column_name,
 

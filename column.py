@@ -9,7 +9,7 @@ class Column:
     column data afterwards. Data are stored within the column object and are later
     used when exporting the DML script for the table.
 
-    :param column_name: Defines the colum's name
+    :param column_name: Defines the column's name
     :param n_rows: Defines how many rows to generate for the column
     :param data_type: Defines the columns data type
     :param ai: Defines the auto increment attribute of the column
