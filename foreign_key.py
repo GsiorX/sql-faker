@@ -56,6 +56,7 @@ class ForeignKey(Column):
     def generate_data(self, recursive=False, lang=None):
         """This method generates foreign key data by sampling the respective primary key.
         
+        :param lang:
         :param recursive: Whether data generation is done for recursive data
         :type recursive: Boolean
         :default recursive: False
@@ -87,11 +88,11 @@ class ForeignKey(Column):
         :returns: DDL line as String
         """
 
-        return self._engine.create_foreign_key(self._table_object._db_object._db_name,self._column_name, str.upper(self._data_type), self._table_object._table_name,
+        return self._engine.create_foreign_key(self._table_object._db_object._db_name, self._column_name,
+                                               str.upper(self._data_type), self._table_object._table_name,
                                                self._target_db.tables[self._target_table]._table_name,
                                                self._target_db.tables[self._target_table].columns[
                                                    self._target_column]._column_name)
 
     def return_foreign_column(self) -> str:
         return super().return_ddl()
-

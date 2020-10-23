@@ -12,7 +12,7 @@ class MySQL(IDatabase):
         for tkey in tables:
             ddl_output += tables[tkey].return_ddl()
 
-        # Create foreign keys
+        # Create foreign keys after all the tables are created
         for tkey in tables:
             for ckey in tables[tkey].columns:
                 if type(tables[tkey].columns[ckey]) is ForeignKey:
@@ -34,17 +34,19 @@ class MySQL(IDatabase):
             " NOT NULL" if not_null else ""
         )
 
+    def create_primary_key(self, column_name) -> str:
+        return "\t`{}` INT PRIMARY KEY AUTO_INCREMENT NOT NULL,\n".format(
+            column_name
+        )
+
     def create_foreign_key(self, db_name: str, column_name: str, data_type: str, table_name: str,
                            target_table_name: str,
                            target_column_name: str) -> str:
         return "ALTER TABLE `{}`.`{}` \n" \
-               "\tADD FOREIGN KEY ({}) REFERENCES {}(`{}`) ON DELETE CASCADE;\n\n".format(
-            db_name,
-            table_name,
-            column_name,
-            target_table_name,
-            target_column_name
-        )
+               "\tADD FOREIGN KEY ({}) REFERENCES {}(`{}`) ON DELETE CASCADE;\n\n".format(db_name, table_name,
+                                                                                          column_name,
+                                                                                          target_table_name,
+                                                                                          target_column_name)
 
     def return_dml(self, db_name: str, tables) -> str:
         dml_output = "USE {};\n\n".format(db_name)
