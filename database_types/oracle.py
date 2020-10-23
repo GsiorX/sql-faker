@@ -67,12 +67,39 @@ class Oracle(IDatabase):
     def return_dml(self, db_name, tables) -> str:
         dml_output = ""
 
-        for key in tables:
-            table_object = tables[key]
-
-            dml_output += table_object.return_dml()
+        for tkey in tables:
+            dml_output += tables[tkey].return_dml()
 
         return dml_output
 
     def insert_data(self, db_name: str, table_name: str, rows: int, attributes, data, datatype) -> str:
-        pass
+        dml_output = "INSERT INTO {}.{} ({}) VALUES\n".format(
+            db_name,
+            table_name,
+            "`, `".join(list(attributes))
+        )
+
+        numtypes = ["int", "float", "single", "decimal", "numeric"]
+
+        for row in range(rows):
+            line = ""
+            for col in range(len(attributes)):
+                split = datatype[col].split("(")[0]
+
+                # Escape single quote
+                if "'" in str(data[row][col]):
+                    data[row][col] = "''".join(data[row][col].split("'"))
+
+                if col > 0:
+                    line += ", "
+                if split in numtypes:
+                    line += str(data[row][col])
+                elif split not in numtypes:
+                    line += "'" + data[row][col] + "'"
+
+            dml_output += "\tSELECT {} FROM dual UNION ALL\n".format(line)
+
+        # add semi colon to end of statement, cut UNION ALL
+        dml_output = dml_output[:-11] + ";\n\n"
+
+        return dml_output
