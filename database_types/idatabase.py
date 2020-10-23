@@ -15,6 +15,10 @@ class IDatabase:
         pass
 
     @abstractmethod
+    def create_primary_key(self, column_name) -> str:
+        pass
+
+    @abstractmethod
     def create_foreign_key(self, db_name: str, column_name: str, data_type: str, table_name: str,
                            target_table_name: str,
                            target_column_name: str) -> str:

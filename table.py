@@ -130,8 +130,10 @@ class Table:
         ddl_output = self._engine.create_table(self._db_object._db_name, self._table_name)
 
         for key in self.columns:
-            if type(self.columns[key]) is not ForeignKey:
+            if type(self.columns[key]) is not ForeignKey and type(self.columns[key]) is not PrimaryKey:
                 ddl_output += self.columns[key].return_ddl()
+            elif type(self.columns[key]) is PrimaryKey:
+                ddl_output += self.columns[key].return_primary_column()
             else:
                 ddl_output += self.columns[key].return_foreign_column()
 

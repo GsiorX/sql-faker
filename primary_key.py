@@ -18,7 +18,6 @@ class PrimaryKey(Column):
     """
 
     def __init__(self, column_name: str, n_rows: int, engine: IDatabase, table_object):
-        
         # Instantiate the master class but fix some parameters
         super().__init__(
             column_name=column_name,
@@ -32,15 +31,13 @@ class PrimaryKey(Column):
             kwargs=None
         )
 
-    def return_ddl(self):
+    def return_ddl(self) -> str:
         """This method returns the DDL line of the respective key column.
         
         :returns: DDL line as String
         """
 
-        ddl_output = "\t`{}` INT PRIMARY KEY AUTO_INCREMENT NOT NULL,\n".format(
-            self._column_name
-        )
+        return self._engine.create_primary_key(self._column_name)
 
-        return ddl_output
-
+    def return_primary_column(self) -> str:
+        return self._engine.create_primary_key(self._column_name)
