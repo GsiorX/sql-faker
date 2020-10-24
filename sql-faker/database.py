@@ -2,7 +2,6 @@ from database_types.idatabase import IDatabase
 from database_types.mysql import MySQL
 from table import Table
 
-
 class Database:
     """This is the main class of this package. It is used to instantiate database objects.
 

@@ -76,7 +76,7 @@ class Oracle(IDatabase):
         dml_output = "INSERT INTO {}.{} ({}) VALUES\n".format(
             db_name,
             table_name,
-            "`, `".join(list(attributes))
+            ", ".join(list(attributes))
         )
 
         numtypes = ["int", "float", "single", "decimal", "numeric"]

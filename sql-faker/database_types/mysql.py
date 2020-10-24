@@ -1,6 +1,5 @@
-from database_types.idatabase import IDatabase
 from foreign_key import ForeignKey
-
+from database_types.idatabase import IDatabase
 
 class MySQL(IDatabase):
     def return_ddl(self, db_name: str, tables) -> str:
