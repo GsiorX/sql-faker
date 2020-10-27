@@ -15,21 +15,16 @@ def get_fake_data(kwargs, data_target="name", n_rows=100, lang="en_US"):
     """
     data_faker = Faker(lang)
 
-    if len(kwargs):
-        generator_function = getattr(data_faker, data_target)(**kwargs)
-    elif data_target == "":
-        generator_function = ""
-    else:
-        generator_function = getattr(data_faker, data_target)
+    generator_function = getattr(data_faker, data_target)
     return_list = []
 
     for _ in range(n_rows):
         if data_target == "":
             return_list.append("")
         else:
-            if callable(generator_function):
-                return_list.append(generator_function())
+            if len(kwargs):
+                return_list.append(generator_function(**kwargs))
             else:
-                return_list.append(generator_function)
+                return_list.append(generator_function())
 
     return return_list
