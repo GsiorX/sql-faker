@@ -2,7 +2,7 @@ from database_types.idatabase import IDatabase
 from foreign_key import ForeignKey
 
 
-def create_auto_increment_columns(db_name, columns) -> str:
+def create_auto_increment_columns(db_name, table, columns) -> str:
     ddl_output = ""
 
     for ckey in columns:
@@ -15,7 +15,7 @@ def create_auto_increment_columns(db_name, columns) -> str:
                           "\tWHEN (NEW.{} IS NULL)\n" \
                           "BEGIN\n" \
                           "\tSELECT {}.{}_seq.NEXTVAL INTO :NEW.{} FROM DUAL;\n" \
-                          "END;\n\n".format(db_name, column_name, db_name, column_name, column_name, db_name,
+                          "END;\n\n".format(db_name, column_name, db_name, table._table_name, column_name, db_name,
                                             column_name, column_name)
 
     return ddl_output
@@ -32,7 +32,7 @@ class Oracle(IDatabase):
         # Create Tables without foreign keys
         for tkey in tables:
             ddl_output += tables[tkey].return_ddl()
-            ddl_output += create_auto_increment_columns(db_name, tables[tkey].columns)
+            ddl_output += create_auto_increment_columns(db_name, tables[tkey], tables[tkey].columns)
 
         # Create foreign keys after all the tables are created
         for tkey in tables:
@@ -49,19 +49,25 @@ class Oracle(IDatabase):
         )
 
     def create_column(self, column_name: str, not_null: bool, ai: bool, data_type: str) -> str:
-        return "\t{} {} {},\n".format(
-            column_name,
-            data_type,
-            " NOT NULL" if not_null else ""
-        )
+        if data_type == "INT":
+            return "\t{} NUMBER(10) {},\n".format(
+                column_name,
+                " NOT NULL" if not_null else ""
+            )
+        else:
+            return "\t{} {} {},\n".format(
+                column_name,
+                data_type,
+                " NOT NULL" if not_null else ""
+            )
 
     def create_primary_key(self, column_name) -> str:
         return "\t{} NUMBER(10) PRIMARY KEY NOT NULL,\n".format(column_name)
 
     def create_foreign_key(self, db_name: str, column_name: str, data_type: str, table_name: str,
                            target_table_name: str, target_column_name: str) -> str:
-        return "ALTER TABLE {}.{} ADD CONSTRAINT fk_{}\n" \
-               "\tFOREIGN KEY ({}) REFERENCES {}({});\n\n".format(db_name, table_name, column_name, column_name,
+        return "ALTER TABLE {}.{} ADD CONSTRAINT {}{}\n" \
+               "\tFOREIGN KEY ({}) REFERENCES {}({});\n\n".format(db_name, table_name, table_name, column_name, column_name,
                                                                   target_table_name, target_column_name)
 
     def return_dml(self, db_name, tables) -> str:
