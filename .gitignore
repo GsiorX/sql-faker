@@ -1,2 +1,4 @@
 /.idea/
 generated.sql
+
+/sql-faker/time-measure/time-results.csv

@@ -24,5 +24,3 @@ class Timer:
 
     def accumulated(self):
         print(f"Total for {self.name}: {self.sum:0.4f} seconds\n")
-
-        return self.sum

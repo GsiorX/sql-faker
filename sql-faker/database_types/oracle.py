@@ -68,7 +68,7 @@ class Oracle(IDatabase):
     def create_foreign_key(self, db_name: str, column_name: str, data_type: str, table_name: str,
                            target_table_name: str, target_column_name: str) -> str:
         return "ALTER TABLE {}.{} ADD CONSTRAINT {}{}\n" \
-               "\tFOREIGN KEY ({}) REFERENCES {}({}) DEFERRABLE INITIALLY IMMEDIATE;\n/\n\n".format(db_name, table_name, table_name, column_name, column_name,
+               "\tFOREIGN KEY ({}) REFERENCES {}({}) ON DELETE CASCADE DEFERRABLE INITIALLY IMMEDIATE;\n/\n\n".format(db_name, table_name, table_name, column_name, column_name,
                                                                   target_table_name, target_column_name)
 
     def return_dml(self, db_name, tables) -> str:
