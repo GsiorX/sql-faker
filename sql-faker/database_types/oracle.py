@@ -15,7 +15,7 @@ def create_auto_increment_columns(db_name, table, columns) -> str:
                           "\tWHEN (NEW.{} IS NULL)\n" \
                           "BEGIN\n" \
                           "\tSELECT {}.{}_seq.NEXTVAL INTO :NEW.{} FROM DUAL;\n" \
-                          "END;\n\n".format(db_name, column_name, db_name, table._table_name, column_name, db_name,
+                          "END;\n/\n\n".format(db_name, column_name, db_name, table._table_name, column_name, db_name,
                                             column_name, column_name)
 
     return ddl_output
@@ -28,6 +28,7 @@ class Oracle(IDatabase):
         ddl_output += "CREATE USER {} IDENTIFIED BY {};\n".format(db_name, db_name)
         ddl_output += "ALTER USER {} QUOTA UNLIMITED on USERS;\n".format(db_name)
         ddl_output += "ALTER SESSION SET CURRENT_SCHEMA = {};\n\n".format(db_name)
+        ddl_output += "ALTER SESSION SET CONSTRAINTS = DEFERRED;"
 
         # Create Tables without foreign keys
         for tkey in tables:
@@ -67,7 +68,7 @@ class Oracle(IDatabase):
     def create_foreign_key(self, db_name: str, column_name: str, data_type: str, table_name: str,
                            target_table_name: str, target_column_name: str) -> str:
         return "ALTER TABLE {}.{} ADD CONSTRAINT {}{}\n" \
-               "\tFOREIGN KEY ({}) REFERENCES {}({});\n\n".format(db_name, table_name, table_name, column_name, column_name,
+               "\tFOREIGN KEY ({}) REFERENCES {}({}) DEFERRABLE INITIALLY IMMEDIATE;\n/\n\n".format(db_name, table_name, table_name, column_name, column_name,
                                                                   target_table_name, target_column_name)
 
     def return_dml(self, db_name, tables) -> str:
@@ -76,16 +77,18 @@ class Oracle(IDatabase):
         for tkey in tables:
             dml_output += tables[tkey].return_dml()
 
+        dml_output += "\nALTER SESSION SET CONSTRAINTS = IMMEDIATE;"
+
         return dml_output
 
     def insert_data(self, db_name: str, table_name: str, rows: int, attributes, data, datatype) -> str:
-        dml_output = "INSERT INTO {}.{} ({}) VALUES\n".format(
+        dml_output = "INSERT INTO {}.{} ({})\n".format(
             db_name,
             table_name,
             ", ".join(list(attributes))
         )
 
-        numtypes = ["int", "float", "single", "decimal", "numeric"]
+        numtypes = ["number", "int", "float", "single", "decimal", "numeric"]
 
         for row in range(rows):
             line = ""
@@ -100,6 +103,8 @@ class Oracle(IDatabase):
                     line += ", "
                 if split in numtypes:
                     line += str(data[row][col])
+                elif split == "date":
+                    line += "'" + str(data[row][col].strftime("%Y-%m-%d")) + "'"
                 elif split not in numtypes:
                     line += "'" + data[row][col] + "'"
 

@@ -134,9 +134,14 @@ class Table:
         ddl_output = ddl_output[:-2]
 
         # add closing bracket
-        ddl_output += "\n);\n\n"
+        ddl_output += "\n);\n/\n\n"
 
         return ddl_output
+
+    def chunks(self, lst, n):
+        """Yield successive n-sized chunks from lst."""
+        for i in range(0, len(lst), n):
+            yield lst[i:i + n]
 
     def return_dml(self):
         """This method returns a table's DML script.
@@ -156,5 +161,12 @@ class Table:
         # transpose the data
         data = array(data).transpose()
 
-        return self._engine.insert_data(self._db_object._db_name, self._table_name, self._n_rows, attributes, data,
-                                        datatype)
+        data = self.chunks(data, 500)
+
+        dml_output = ""
+
+        for insert in data:
+            dml_output += self._engine.insert_data(self._db_object._db_name, self._table_name, len(insert), attributes, insert,
+                                            datatype)
+
+        return dml_output
