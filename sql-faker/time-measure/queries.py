@@ -114,18 +114,18 @@ WHERE customer.emailverified = 0
     HAVING COUNT(cc.rentid) = 0
 ) = 0
 AND (SELECT AVG(Rate.value) from Rate WHERE customer.customerId = Rate.customercustomerid) < 5
-AND (SELECT Length(Description) from Rate WHERE customer.customerId = Rate.customercustomerid AND Length(Description) > 5) > 5"""
+AND (SELECT Length(Description) from Rate WHERE customer.customerId = Rate.customercustomerid AND Length(Description) > 5 AND ROWNUM <= 1) > 5"""
         )
 
     def zd4(self):
-        c= self.cursor
+        c = self.cursor
 
         c.execute(
             f"""
 INSERT INTO Movie (MovieId, title, premieredate, duration, budget, description, studio, promo, translationtranslationid)
 SELECT
 (SELECT MAX(MovieId) + 1 FROM Movie),
-(SELECT CONCAT('TEST__', CONCAT(title, '__TEST')) from movie where Length(title) = (SELECT MAX(Length(Title)) from movie)),
+(SELECT CONCAT('TEST__', CONCAT(title, '__TEST')) from movie where Length(title) = (SELECT MAX(Length(Title)) from movie) FETCH NEXT 1 ROW ONLY),
 PREMIEREDATE,
 (SELECT AVG(Duration) from movie),
 (SELECT SUM(Budget) from movie),

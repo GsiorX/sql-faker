@@ -98,9 +98,9 @@ if __name__ == "__main__":
                 writer.writerow([zd4.name, zd4.sum / 3, zd4.max, zd4.min, 3])
 
             # INDEKSY
-            za1 = Timer("ZA1")
+            za1 = Timer("ZA1-genre_movie_moviemovieid_index")
             za2 = Timer("ZA2")
-            za3 = Timer("ZA3")
+            za3 = Timer("ZA3-title_sub_trim_lower_index")
             for _ in range(10):
                 with CleanCache(sys_cursor).without_cache():
                     with IndexCache(cursor, "genre_movie_moviemovieid_index", "genre_movie", "moviemovieid").with_index():
