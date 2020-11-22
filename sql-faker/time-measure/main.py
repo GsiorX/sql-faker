@@ -156,7 +156,7 @@ if __name__ == "__main__":
                             queries.zd3(25)
 
                 with CleanCache(sys_cursor).without_cache():
-                    with IndexCache(cursor, "value_index", "Rate", "Value", True).with_index():
+                    with IndexCache(cursor, "value_bitmap_index", "Rate", "Value", True).with_index():
                         with zd3bitmapindex.measure("ZD3-bitmap-index"):
                             queries.zd3(25)
                 connection.rollback()
