@@ -129,7 +129,7 @@ if __name__ == "__main__":
                     with IndexCache(cursor, "len_desc_index", "Rate", "Length(description)").with_index():
                         with zd3length.measure("ZD3-length-description"):
                             queries.zd3(25)
-                    with IndexCache(cursor, "emailverified_bitmap_index", "rent", "emailverified", True).with_index():
+                    with IndexCache(cursor, "emailverified_bitmap_index", "Customer", "emailverified", True).with_index():
                         with zd3bitmapindex.measure("ZD3-bitmap-index"):
                             queries.zd3(25)
                     with zd4.measure("ZD4"):
@@ -140,9 +140,6 @@ if __name__ == "__main__":
                 writer = csv.writer(csvfile, delimiter=" ", quotechar="|", quoting=csv.QUOTE_MINIMAL)
 
                 writer.writerow(["Nazwa", "Sredni czas wykonania", "Max czas", "Min czas", "Ilosc wykonan"])
-                writer.writerow([za1.name, za1.sum / 10, za1.max, za1.min, 10])
-                writer.writerow([za2.name, za2.sum / 10, za2.max, za2.min, 10])
-                writer.writerow([za3.name, za3.sum / 10, za3.max, za3.min, 10])
                 writer.writerow([zd1.name, zd1.sum / 3, zd1.max, zd1.min, 3])
                 writer.writerow([zd2.name, zd2.sum / 3, zd2.max, zd2.min, 3])
                 writer.writerow([zd3length.name, zd3length.sum / 3, zd3length.max, zd3length.min, 3])
