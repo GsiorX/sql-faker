@@ -114,7 +114,7 @@ WHERE customer.emailverified = 0
     HAVING COUNT(cc.rentid) = 0
 ) = 0
 AND (SELECT AVG(value) from Rate WHERE customer.customerId = Rate.customercustomerid AND value < 5) < 5
-AND (SELECT Length(Description) from Rate WHERE customer.customerId = Rate.customercustomerid AND Length(Description) > 5) > 5;"""
+AND (SELECT Length(Description) from Rate WHERE customer.customerId = Rate.customercustomerid AND Length(Description) > 5) > 5"""
         )
 
     def zd4(self):
