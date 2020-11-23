@@ -110,7 +110,7 @@ DELETE FROM customer
 WHERE customer.emailverified = 0 
     AND customer.freemovies = 0 AND
     (SELECT COUNT(cc.rentid) FROM Rent cc WHERE customer.customerId = cc.customercustomerid 
-    AND CURRENT_DATE > customer.registrationdate + :days_not_verified
+    AND CURRENT_DATE > customer.registrationdate + 25
     HAVING COUNT(cc.rentid) = 0
 ) = 0
 AND (SELECT AVG(value) from Rate WHERE customer.customerId = Rate.customercustomerid AND value < 5) < 5
