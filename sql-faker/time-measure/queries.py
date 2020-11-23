@@ -110,11 +110,11 @@ DELETE FROM customer
 WHERE customer.emailverified = 0 
     AND customer.freemovies = 0 AND
     (SELECT COUNT(cc.rentid) FROM Rent cc WHERE customer.customerId = cc.customercustomerid 
-    AND CURRENT_DATE > customer.registrationdate + 25
+    AND CURRENT_DATE > customer.registrationdate + :days_not_verified
     HAVING COUNT(cc.rentid) = 0
 ) = 0
-AND (SELECT AVG(Rate.value) from Rate WHERE customer.customerId = Rate.customercustomerid) < 5
-AND (SELECT Length(Description) from Rate WHERE customer.customerId = Rate.customercustomerid AND Length(Description) > 5 AND ROWNUM <= 1) > 5"""
+AND (SELECT AVG(value) from Rate WHERE customer.customerId = Rate.customercustomerid AND value < 5) < 5
+AND (SELECT Length(Description) from Rate WHERE customer.customerId = Rate.customercustomerid AND Length(Description) > 5) > 5;"""
         )
 
     def zd4(self):
