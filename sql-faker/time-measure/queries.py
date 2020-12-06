@@ -79,7 +79,7 @@ SET customer.freemovies = 3
 WHERE (
     SELECT COUNT(cc.rentid) FROM Rent cc WHERE customer.customerId = cc.customercustomerid 
     AND customer.emailverified = 1 
-    AND customer.registrationdate < TO_DATE('1970-01-01', 'YYYY-MM-DD')
+    AND customer.registrationdate < TO_DATE('2020-01-01', 'YYYY-MM-DD')
     HAVING COUNT(cc.rentid) > 2
 ) > 2"""
         )
